@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no" >
+	<meta charset="utf-8">
+	<title>何嘉仁字母發音大集合</title>
+	<script src="./resource/save.js"></script>
+	<script src="./js/FramePlay.js"></script>
+	<script src="./js/Page_Control.js"></script>
+	<script src="./js/UI_Control.js"></script>
+	<script src="./lib/jquery.min.js"></script>
+	<script src="lib/jquery.js"></script>
+	<script src="./lib/jquery-ui.min.js"></script>
+	<script src="./lib/easeljs-NEXT.js"></script>
+	<script src="./lib/Slider.js"></script>
+	<script src="./lib/preloadjs-NEXT.min.js"></script>
+</head>
+<style>
+	body { /*底色*/
+    background: rgb(255, 255, 255);
+    margin:0px;
+	height: 100%;
+    padding:0px;
+    overflow: hidden;
+	}
+	#CanvasDiv { /*放置Canvas*/
+    	position: relative;
+    	margin: 10;
+    	padding: 0;
+    	width: 100%; 
+		height: 100vh;
+		transform-origin : 0% 0%;
+	}
+	#CanvasBg{ /*背景Canvas*/
+		position: absolute;
+    	width: 100%; 
+	    height: 100%; 
+		/*filter:brightness(70%);*/
+	}
+	.CoverPage {
+    	width: 100%; 
+	    height: 100%;
+    	margin: auto;
+    	background-color: #000;
+    	position: absolute;
+	}
+	.CoverPage > img {
+    	position: absolute;
+   		width: 100%; height: 100%;
+	}
+	.loading {
+		position: absolute;
+		height: 8px; width: 150px;
+		border: 1px solid #eee;
+		background: linear-gradient(to top, #eee, #eee);
+		background-size: 0 100%;
+		transition: background-size .1s;
+		left: 0; top: 0; right: 0; bottom: 0;
+		margin: auto;
+	}
+	.loading::before {
+		content: attr(data-percent)'%';
+		position: absolute;
+		left: 0; top: -1.5em;
+		font-size: 12px;
+		color: #eee;
+	}
+
+	/*登入頁*/
+	#HomePage{
+		position: absolute;
+    	width: 100%; 
+    	height: 100%; 
+	}
+	.HomeBtn {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		left:calc(50% - 299px);
+    	cursor:pointer;
+	}
+
+	/*選擇播放類型*/
+	#TypePage_1{
+		position: absolute;
+    	width: 100%; 
+    	height: 100%; 
+	}
+	#TypePage_1_1{
+		position: absolute;
+    	width: 100%; 
+    	height: 100%; 
+	}
+	#TypePage_2{
+		position: absolute;
+    	width: 100%; 
+    	height: 100%; 
+	}
+	.TypeBg {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		background-image: url('./art/TypeBg.png');
+		background-repeat: no-repeat;  
+		background-size:100%;
+		font-size:40px;
+    	color:rgb(0, 0, 0);
+    	font-weight:bold;
+    	font-family:微軟正黑體;
+    	text-align: center;
+    	line-height: 320px;
+		left:calc(50% - 330px);
+    	width: 722px;
+    	height: 262px;
+	}
+	.TypeImg {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+	}
+	.TypeBtn {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		cursor:pointer;
+	}
+	.TypeBtn:hover {
+    	transform: scale(1.1);
+	}
+	.TypeBtnNoSca {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		cursor:pointer;
+	}
+	.TypeBtn2 {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		transform: scale(1);
+		background-image: url('./art/TypeBtn2.png');
+		background-repeat: no-repeat;  
+		background-size:100%;
+		font-size:30px;
+    	color:rgb(0, 0, 0);
+    	font-weight:bold;
+    	font-family:微軟正黑體;
+    	text-align: center;
+    	line-height: 59px;
+    	width: 105px;
+		height: 59px;
+		cursor:pointer;
+	}
+	.TypeBtn2:hover {
+    	transform: scale(1.2);
+	}
+	.RemindBtn {
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+		position: absolute;
+		cursor:pointer;
+	}
+
+	/*播放頁*/
+	#MainPage{
+		position: absolute;
+    	width: 100%; 
+		height: 100%; 
+	}
+	#PlayerVideo{
+		position: absolute;
+		cursor:pointer;
+		width: 1550px; 
+		height: 1160px; 
+		left:190px;
+		top:135px;
+		background-color:#14293D;
+	}
+	#PlayerImg{
+		position: absolute;
+		width: 700px; 
+		height: 350px; 
+		left:650px;
+		bottom:250px;
+	}
+
+	/*播放頁*/
+	#ExitPage{
+		position: absolute;
+    	width: 100%; 
+		height: 100%; 
+	}
+
+	/*按鈕*/
+	.Btn {
+		position: absolute;
+		cursor:pointer;
+		-webkit-user-select: none; /*不可複製用*/
+		-ms-user-select: none; /*不可複製用*/
+		user-select: none; /*不可複製用*/
+	}
+</style>
+<!-- 防止手機縮放 -->
+<body ontouchmove="javascript:window.event.preventDefault();" ondragstart="return false;">
+	<!-- 背景顏色 -->
+	<div id="CanvasBg"></div>
+	<!-- 主頁面 -->
+	<div id="CanvasDiv">
+		<!-- 封面 -->
+		<div id="CoverPage" class="CoverPage">
+			<span id="loading" class="loading" data-percent="0"></span>
+		</div>
+		<!-- 主頁 -->
+		<div id="HomePage">
+			<img id="CanvasBg" src="art/bg/BG02.jpg">
+			<img id="TypeBtn1" class="HomeBtn" src="art/btn/btn_type1_1.png" onclick="GoToPage('TypePage1',0);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:320px; top:460px;">
+			<img id="TypeBtn2" class="HomeBtn" src="art/btn/btn_type2_1.png" onclick="GoToPage('TypePage2',0);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:1090px; top:460px;">
+		</div>
+		<!-- 發音例字頁 -->
+		<div id="TypePage_1">
+			<img id="CanvasBg" src="art/bg/BG03.jpg">
+			<img class="TypeBtn" src="art/btn/alphabet/a1.png" onclick="GoToPage('TypePage1_1',1);" style="left:135px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/b1.png" onclick="GoToPage('TypePage1_1',2);" style="left:440px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/c1.png" onclick="GoToPage('TypePage1_1',3);" style="left:740px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/d1.png" onclick="GoToPage('TypePage1_1',4);" style="left:1045px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/e1.png" onclick="GoToPage('TypePage1_1',5);" style="left:1350px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/f1.png" onclick="GoToPage('TypePage1_1',6);" style="left:1650px; top:115px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/g1.png" onclick="GoToPage('TypePage1_1',7);" style="left:30px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/h1.png" onclick="GoToPage('TypePage1_1',8);" style="left:315px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/i1.png" onclick="GoToPage('TypePage1_1',9);" style="left:600px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/j1.png" onclick="GoToPage('TypePage1_1',10);" style="left:890px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/k1.png" onclick="GoToPage('TypePage1_1',11);" style="left:1180px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/l1.png" onclick="GoToPage('TypePage1_1',12);" style="left:1460px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/m1.png" onclick="GoToPage('TypePage1_1',13);" style="left:1745px; top:435px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/n1.png" onclick="GoToPage('TypePage1_1',14);" style="left:135px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/o1.png" onclick="GoToPage('TypePage1_1',15);" style="left:440px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/p1.png" onclick="GoToPage('TypePage1_1',16);" style="left:740px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/q1.png" onclick="GoToPage('TypePage1_1',17);" style="left:1045px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/r1.png" onclick="GoToPage('TypePage1_1',18);" style="left:1350px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/s1.png" onclick="GoToPage('TypePage1_1',19);" style="left:1650px; top:735px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/t1.png" onclick="GoToPage('TypePage1_1',20);" style="left:30px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/u1.png" onclick="GoToPage('TypePage1_1',21);" style="left:315px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/v1.png" onclick="GoToPage('TypePage1_1',22);" style="left:600px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/w1.png" onclick="GoToPage('TypePage1_1',23);" style="left:890px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/x1.png" onclick="GoToPage('TypePage1_1',24);" style="left:1180px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/y1.png" onclick="GoToPage('TypePage1_1',25);" style="left:1460px; top:1050px; position: absolute;">
+			<img class="TypeBtn" src="art/btn/alphabet/z1.png" onclick="GoToPage('TypePage1_1',26);" style="left:1745px; top:1050px; position: absolute;">
+		</div>
+		<!-- 發音例字  單獨字母頁 -->
+		<div id="TypePage_1_1">
+			<img id="CanvasBg" src="art/bg/BG04.jpg">
+			<img id="TitleImg" class="TypeImg" src="resource/Pron/a/title.png" style="left:60px; top:120px; position: absolute;">
+			<img id="VideoBtn1" class="TypeBtnNoSca" src="resource/Pron/a/videoBtn1_1.png" onclick="GoToPage('MainPage',1);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:740px; top:120px; position: absolute;">
+			<img id="VideoBtn2" class="TypeBtnNoSca" src="resource/Pron/a/videoBtn2_1.png" onclick="GoToPage('MainPage',2);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:1370px; top:120px; position: absolute;">
+			<img id="ImgBtn1" class="TypeBtnNoSca" src="resource/Pron/a/img1_1.png" onclick="GoToPage('MainPage',3);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:280px; top:600px; position: absolute;">
+			<img id="ImgBtn2" class="TypeBtnNoSca" src="resource/Pron/a/img2_1.png" onclick="GoToPage('MainPage',4);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:900px; top:600px; position: absolute;">
+			<img id="ImgBtn3" class="TypeBtnNoSca" src="resource/Pron/a/img3_1.png" onclick="GoToPage('MainPage',5);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:1520px; top:600px; position: absolute;">
+			<img id="ImgBtn4" class="TypeBtnNoSca" src="resource/Pron/a/img4_1.png" onclick="GoToPage('MainPage',6);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:40px; top:1000px; position: absolute;">
+			<img id="ImgBtn5" class="TypeBtnNoSca" src="resource/Pron/a/img5_1.png" onclick="GoToPage('MainPage',7);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:650px; top:1000px; position: absolute;">
+			<img id="ImgBtn6" class="TypeBtnNoSca" src="resource/Pron/a/img6_1.png" onclick="GoToPage('MainPage',8);" onmouseover="hover(this);" onmouseout="unhover(this);" style="left:1250px; top:1000px; position: absolute;">
+		</div>
+		<!-- 發音叮嚀頁 -->
+		<div id="TypePage_2">
+			<img id="CanvasBg" src="art/bg/BG06.jpg">
+			<img class="TypeImg" src="art/btn/remindBg1.png" style="left:85px; top:400px; position: absolute;">
+			<img class="TypeImg" src="art/btn/remindBg2.png" style="left:715px; top:140px; position: absolute;">
+			<img class="TypeImg" src="art/btn/remindBg3.png" style="left:1345px; top:400px; position: absolute;">
+			<img class="TypeImg" src="art/btn/remindBg4.png" style="left:1060px; top:890px; position: absolute;">
+			<img class="TypeImg" src="art/btn/remindBg5.png" style="left:370px; top:890px; position: absolute;">
+			<img class="RemindBtn" src="" onclick="OpenWeb(0);" target="_blank" style="left:85px; top:400px; position: absolute;">
+			<img class="RemindBtn" src="" onclick="OpenWeb(1);" target="_blank" style="left:715px; top:140px; position: absolute;">
+			<img class="RemindBtn" src="" onclick="OpenWeb(2);" target="_blank" style="left:1345px; top:400px; position: absolute;">
+			<img class="RemindBtn" src="" onclick="OpenWeb(3);" target="_blank" style="left:1060px; top:890px; position: absolute;">
+			<img class="RemindBtn" src="" onclick="OpenWeb(4);" target="_blank" style="left:370px; top:890px; position: absolute;">
+		</div>
+		<!-- 播放頁 -->
+		<div id="MainPage">
+			<img id="CanvasBg" src="art/bg/BG05.jpg">
+			<video id="PlayerVideo" onended="VideoEnd()" onclick="PlayVideo()">
+				<!--如影片有多個格式-->
+				<source id="videoSrc" src="" type="video/mp4"/>    <!--注意：添加影片播放鏈-->
+			</video>
+			<img id="PlayBtn" class="Btn" src="art/btn/playBtn.png" onclick="PlayVideo()" style="bottom:440px; right:145px"/>
+			<img id="RepeatBtn" class="Btn" src="art/btn/repeatBtn1.png" onclick="SetRepeat()" style="bottom:270px; right:145px"/>
+		</div>
+		<!-- 返回按鈕 -->
+		<img id="BackBtn" class="Btn" src="art/btn/back.png" onclick="BackToPage()" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:25px; right:470px;">
+		<img id="BackText" class="Btn" src="art/btn/BackText.png" style="bottom:125px; right:500px; display:none;">
+		<!-- 發音例字按鈕 -->
+		<img id="TypePageBtn1" class="Btn" src="art/btn/pagebtn1.png" onclick="GoToPage('TypePage1',0);" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:25px; right:325px;">
+		<img id="TypeText1" class="Btn" src="art/btn/typeText1.png" style="bottom:125px; right:340px; display:none;">
+		<!-- 發音叮嚀按鈕 -->
+		<img id="TypePageBtn2" class="Btn" src="art/btn/pagebtn2.png" onclick="GoToPage('TypePage2',0);" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:25px; right:325px;">
+		<img id="TypeText2" class="Btn" src="art/btn/typeText2.png" style="bottom:125px; right:340px; display:none;">
+		<!-- 離開按鈕 -->
+		<img id="ExitBtn" class="Btn" src="art/btn/exit.png" onclick="OpenExitPage()" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:25px; right:30px;">
+		<!-- 全螢幕按鈕 -->
+		<img id="FullBtn" class="Btn" src="art/btn/full.png" onclick="WindowScreenFull()" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:25px; right:170px;">
+		<!-- 離開視窗 -->
+		<div id="ExitPage">
+			<img id="BlackGround2" style="position: absolute; width: 100%; height: 100%; background-color: rgb(0, 0, 0 ,0.5);">
+			<img id="ExitBg" src="art/btn/exitWindow.png" style="position: absolute; bottom:540px; right:580px">
+			<img id="cancelBtnW" class="Btn" src="art/btn/cancelBtn.png" onclick="CloseExitPage()" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:600px; right:1165px"/>
+			<img id="exitBtnW" class="Btn" src="art/btn/exitBtn.png" onclick="exitPage()" onmouseover="hover(this);" onmouseout="unhover(this);" style="bottom:600px; right:780px"/>
+		</div>
+		<!-- 第一次載入時的遮罩 -->
+		<img id="BlackGround" style="position: absolute; width: 100%; height: 100%; background-color: rgb(0, 0, 0);">
+	</div>
+</body>
+
+<script id="editable">
+	//版面 尺寸
+	var BgImageWidth = 2048;
+	var BgImageHeight = 1536;
+
+	//播放類型
+	var NowPage = 0; //主頁0 字母清單頁1 單獨字母頁2 播放頁3 (返回用)
+	var NowIndex = 0; //目前開啟的字母編號
+
+	//判斷裝置類型
+	var model = 0; //0:PC / 1:Android / 2:IOS
+	//資源路徑
+	var NetPath = "http://hanlincard.office.topschool.com.tw/";
+	var resourcePath = "./Resource/";
+	var LoadUnit = "1";
+
+	//標籤
+	var CoverImg = document.getElementById('CanvasBg'); //封面
+	var HomePage = document.getElementById('HomePage'); //主頁
+	var TypePage1 = document.getElementById('TypePage_1'); //發音例字頁
+	var TypePage1_1 = document.getElementById('TypePage_1_1'); //發音例字頁 進入 單獨字母頁
+	var TypePage2 = document.getElementById('TypePage_2'); //發音叮嚀頁
+	var TypePageBtn1 = document.getElementById('TypePageBtn1'); //發音例字按鈕
+	var TypePageBtn2 = document.getElementById('TypePageBtn2'); //發音叮嚀按鈕
+	var MainPage = document.getElementById('MainPage'); //播放頁
+	var BackBtn = document.getElementById('BackBtn'); //返回按鈕
+	var PlayBtn = document.getElementById('PlayBtn'); //播放按鈕
+	var RepeatBtn = document.getElementById('RepeatBtn'); //重複按鈕
+	var BlackGround = document.getElementById('BlackGround'); //初始載入的遮罩
+	var BackText = document.getElementById('BackText'); //返回按鈕二態
+	var ExitWindow = document.getElementById('ExitPage'); //離開視窗
+	
+	//調整畫面時自動伸縮比例 //ready等同於window.onload 剛開啟時才會執行
+	//resize則是當尺寸改變時呼叫
+	$(document).ready(function () {
+		init();
+		$(window).resize(function () {
+			SetCssScale();
+			//全螢幕判定，切換圖示
+			if (!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
+				console.log("目前非螢幕");
+				IsFull = false;
+			}else{
+				console.log("目前全螢幕");
+				IsFull = true;
+			}
+		});
+	});
+
+	function noZoomTap() {
+			document.addEventListener('touchstart', function(event) {
+				if (event.touches.length > 1) {
+					event.preventDefault();
+				}
+			}, { passive: false });
+
+			var lastTouchEnd = 0;
+			document.addEventListener('touchend', function(event) {
+				const now = (new Date()).getTime();
+				if (now - lastTouchEnd <= 300) {
+					event.preventDefault();
+				}
+				lastTouchEnd = now;
+			}, false);
+	}
+
+	function init() {
+		//判斷裝置類型
+		var u = navigator.userAgent;
+		var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+		//var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+		var isiOS = (/iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && !window.MSStream;
+		if(isAndroid) model = 1;
+		if(isiOS) model = 2;
+		if(model == 2){
+			document.body.addEventListener('touchmove', function (e) {
+  				e.preventDefault();
+			})
+			noZoomTap();
+		}else{ //判斷是否支持觸控 (觸控螢幕windows
+			/*if (document.hasOwnProperty("ontouchstart")) {
+				model = 1;
+				console.log("瀏覽器支持觸控");
+			}
+			else {
+				model = 0;
+				console.log("瀏覽器不支持觸控");
+			}*/
+			if ('ontouchstart' in window || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)) {
+				model = 1;
+				console.log("瀏覽器支持觸控");
+			}
+			else {
+				model = 0;
+				console.log("瀏覽器不支持觸控");
+			}
+		}
+		//取得網址 //取得需載入的課程
+		NetPath = window.location.hostname;
+		LoadUnit = window.location.pathname.split('/')[1];
+		if(NetPath.length != 0){
+		   console.log("線上版");
+		   //resourcePath = "/"+LoadUnit+"/resource/"; <--此功能暫時不用
+		   resourcePath = "./Resource/";
+		}else{
+		   console.log("單機版");
+		   resourcePath = "./Resource/";
+		}
+		console.log("NetPath:"+NetPath);
+		console.log("ResourcePath:"+resourcePath);
+		//設定初始版面大小，之後都用scale來調整縮放
+    	document.getElementById('CanvasDiv').style.width = BgImageWidth + "px";
+        document.getElementById('CanvasDiv').style.height = BgImageHeight + "px";
+		
+		//隱藏選單
+		ExitWindow.style.display = 'none';
+		BackBtn.style.display = 'none';
+		HomePage.style.display = 'none';
+		TypePage1.style.display = 'none';
+		TypePage1_1.style.display = 'none';
+		TypePage2.style.display = 'none';
+		TypePageBtn1.style.display = 'none';
+		TypePageBtn2.style.display = 'none';
+		MainPage.style.display = 'none';
+		BlackGround.style.display = 'none';
+		//禁止右鍵
+		document.oncontextmenu = function(e){
+        	return false;
+		}
+		//自適應介面
+		SetCssScale();
+		//載入XML
+		LoadXML();
+		//播放封面
+		loadCover();
+	}
+
+	//獲取外部特定屬性
+		$.urlParam = function (name) {
+			var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+			if (results == null) {
+				return null;
+			}
+			else {
+				return decodeURI(results[1]) || 0;
+			}
+		}
+</script>
+</html>
